@@ -6,9 +6,9 @@ class SecurityGuard {
     getAccessToATM(ATM_API) {
         this.ATM_API = ATM_API;
 
-        let {isSecurityGuardHasAccess} = this.ATM_API;
+        let {getSecurityGuardAccess} = this.ATM_API;
 
-        let {success, error} = isSecurityGuardHasAccess(this.supportedBanks);
+        let {success, error} = getSecurityGuardAccess(this.supportedBanks);
 
         if (error) {
             return {error};
@@ -17,7 +17,7 @@ class SecurityGuard {
         return success;
     }
 
-    endATMOperation() {
+    endOperationWithATM() {
         let {success, error} = this.withCheckATMConnection('endSecurityGuardOperation');
 
         if (error) {
@@ -29,12 +29,12 @@ class SecurityGuard {
         return {success};
     }
 
-    collectATMMoney(amount) {
-        return this.withError('withCheckATMConnection', 'collectMoney', amount);
+    getMoneyCashFromATM(amount) {
+        return this.withResult('withCheckATMConnection', 'collectMoney', amount);
     }
 
-    rechargeBalance(amount) {
-        return this.withError('withCheckATMConnection', 'rechargeMoney', amount);
+    rechargeBalanceOfATM(amount) {
+        return this.withResult('withCheckATMConnection', 'rechargeMoney', amount);
     }
 
     withCheckATMConnection(method, data) {
@@ -49,7 +49,7 @@ class SecurityGuard {
         }
     }
 
-    withError(method, ...data) {
+    withResult(method, ...data) {
         let {success, error} = this[method](...data);
 
         if (error) {

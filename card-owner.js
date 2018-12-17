@@ -28,9 +28,9 @@ class CardOwner {
     setCardToATM(ATM_API, cardAPI) {
         this.ATM_API = ATM_API;
 
-        let {isCardSupported} = this.ATM_API;
+        let {getOwnerAccessByCard} = this.ATM_API;
 
-        let {success, error} = isCardSupported(cardAPI, this.ownerId);
+        let {success, error} = getOwnerAccessByCard(cardAPI, this.ownerId);
 
         if (error) {
             return {error};
@@ -39,7 +39,7 @@ class CardOwner {
         return {success};
     }
     getCardFromATM() {
-        let {success, error} = this.withCheckATMConnection('getCard');
+        let {success, error} = this.withCheckATMConnection('endOperationWithCard');
 
         if (error) {
             return {error};

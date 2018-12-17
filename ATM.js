@@ -11,14 +11,14 @@ class ATM {
         this.getSupportedBanks = this.getSupportedBanks.bind(this);
         this.isATMReadyToWork = this.isATMReadyToWork.bind(this);
 
-        this.isSecurityGuardHasAccess = this.isSecurityGuardHasAccess.bind(this);
-        this.isCardSupported = this.isCardSupported.bind(this);
-        this.getCard = this.getCard.bind(this);
+        this.getSecurityGuardAccess = this.getSecurityGuardAccess.bind(this);
+        this.getOwnerAccessByCard = this.getOwnerAccessByCard.bind(this);
+        this.endOperationWithCard = this.endOperationWithCard.bind(this);
         this.getBalance = this.getBalance.bind(this);
         this.endSecurityGuardOperation = this.endSecurityGuardOperation.bind(this);
     }
 
-    isSecurityGuardHasAccess(securityGuardSupportedBanks) {
+    getSecurityGuardAccess(securityGuardSupportedBanks) {
         let {
             compareSupportedBanks,
             getSupportedBanks,
@@ -44,20 +44,21 @@ class ATM {
         return this.supportedBanks;
     }
 
-    isCardSupported(cardAPI, ownerId) {
+    getOwnerAccessByCard(cardAPI, ownerId) {
         let {
             isATMReadyToWork,
             checkAccess,
             compareOwner,
             compareSupportedBanks,
-            getSupportedBanks,
+            getSupportedBanks: getATMSupportedBanks,
         } = this;
 
+        let {getOwnerId, getSupportedBanks} = cardAPI;
 
-        let {error} = checkAccess(
+        let {success, error} = checkAccess(
             isATMReadyToWork,
-            compareOwner(cardAPI.getOwnerId(), ownerId),
-            compareSupportedBanks(getSupportedBanks(), cardAPI.getSupportedBanks()),
+            compareOwner(getOwnerId(), ownerId),
+            compareSupportedBanks(getATMSupportedBanks(), getSupportedBanks()),
         );
 
         if (error) {
@@ -66,7 +67,7 @@ class ATM {
 
         this.cardAPI = cardAPI;
 
-        return {success: true};
+        return {success};
     }
 
     compareSupportedBanks(ATMSupportedBanks, supportedBanks) {
@@ -107,10 +108,10 @@ class ATM {
     }
 
     checkAccess(...fn) {
-        return fn.reduce((error, fn) => error || fn(), null) || {};
+        return fn.reduce((error, fn) => error || fn(), null) || {success: true};
     }
 
-    getCard() {
+    endOperationWithCard() {
         return this.withResult('cardAPI');
     }
 
@@ -138,9 +139,9 @@ class ATM {
 
     getAPI() {
         let {
-            isSecurityGuardHasAccess,
-            isCardSupported,
-            getCard,
+            getSecurityGuardAccess,
+            getOwnerAccessByCard,
+            endOperationWithCard,
             getBalance,
             operationIsNotSupported,
             endSecurityGuardOperation,
@@ -151,9 +152,9 @@ class ATM {
         } = this;
 
         return {
-            isSecurityGuardHasAccess,
-            isCardSupported,
-            getCard,
+            getSecurityGuardAccess,
+            getOwnerAccessByCard,
+            endOperationWithCard,
             getBalance,
             operationIsNotSupported,
             endSecurityGuardOperation,

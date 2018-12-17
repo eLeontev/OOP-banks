@@ -15,6 +15,7 @@ class Card {
 
     bindCardToOwner(ownerId) {
         let {cardId} = this;
+
         if (this.ownerId) {
             return {
                 error: `the card: ${cardId} is already used by another user: ${this.ownerId}`,

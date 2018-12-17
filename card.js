@@ -34,7 +34,7 @@ class Card {
 
         if (amount > balance) {
             return {
-                error: 'insufficient funds on the card'
+                error: 'insufficient funds on the card',
             }
         }
 
